@@ -1,6 +1,7 @@
 import PIL.Image, PIL.ImageDraw
 from math import inf, dist
 
+
 class Image:
     def __init__(self, content, palette=None):
         self.size = content.size
@@ -11,11 +12,11 @@ class Image:
     def load(path):
         return Image(PIL.Image.open(path))
 
-    def save(self, path, file_format='PNG'):
+    def save(self, path, file_format="PNG"):
         self.content.save(path, file_format)
 
     def resize(self, size):
-        result = PIL.Image.new('RGB', size)
+        result = PIL.Image.new("RGB", size)
         draw = PIL.ImageDraw.Draw(result)
         old_pixels = self.content.load()
         for y in range(result.size[1]):
@@ -26,7 +27,7 @@ class Image:
         return Image(result, self.palette)
 
     def apply_the_palette(self, palette):
-        result = PIL.Image.new('RGB', self.size)
+        result = PIL.Image.new("RGB", self.size)
         draw = PIL.ImageDraw.Draw(result)
         old_pixels = self.content.load()
         for y in range(result.size[1]):
