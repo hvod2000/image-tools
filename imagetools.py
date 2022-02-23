@@ -2,6 +2,11 @@ import PIL.Image, PIL.ImageDraw
 from math import inf, dist
 from kmeans_clustering import kmeans
 
+def number2hex(number, size=2):
+    return hex(number)[2:].rjust(2, '0')
+
+def color2hex(color):
+    return ''.join(map(number2hex, color))
 
 class Image:
     def __init__(self, content, palette=None):
