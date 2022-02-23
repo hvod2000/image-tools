@@ -1,5 +1,6 @@
 import PIL.Image, PIL.ImageDraw
 from math import inf, dist
+from kmeans_clustering import kmeans
 
 
 class Image:
@@ -42,6 +43,16 @@ class Image:
                         min_dist = current_dist
                 draw.point((x, y), palette[closest_color])
         return Image(result, palette)
+
+    def create_palette(self, palette_size = 8):
+        import random
+        colors = []
+        pixels = self.content.load()
+        for y in range(self.size[1]):
+            for x in range(self.size[0]):
+                colors.append(pixels[x, y])
+        random.shuffle(colors)
+        return dict(enumerate(tuple(max(min(round(x), 255), 0) for x in color) for color in kmeans(colors, palette_size)))
 
     def __iter__(self):
         pixels = self.content.load()
