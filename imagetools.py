@@ -32,7 +32,7 @@ class Image:
         old_pixels = self.content.load()
         for y in range(result.size[1]):
             for x in range(result.size[0]):
-                pixel = old_pixels[x_old, y_old]
+                pixel = old_pixels[x, y]
                 closest_color = None
                 min_dist = inf
                 for color_name, color in palette.items():

@@ -18,7 +18,7 @@ def kmeans(points, k, centers=None, number_of_iterations=1024):
         for i, cluster in enumerate(clusters):
             closest_center = None
             if len(cluster) == 0:
-                center[i] = points[(iteration + i) % len(points)]
+                centers[i] = points[(iteration + i) % len(points)]
                 continue
             center = [0] * len(cluster[0])
             for point in cluster:
