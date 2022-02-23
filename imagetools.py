@@ -86,6 +86,20 @@ class Image:
                 colors.add(pixels[x, y])
         return {f'color{i}':c for i, c in enumerate(colors)}
 
+    def to_html(self):
+        assert self.palette
+        color2name = {rgb: color_name for color_name, rgb in self.palette.items()}
+        pixels = self.content.load()
+        result = ['<table class=pixelart>']
+        for y in range(self.size[1]):
+            result.append('\t<tr>')
+            for x in range(self.size[0]):
+                color = color2name[pixels[x, y]]
+                result.append(f'\t\t<td class="{color}" />')
+            result.append('\t</tr>')
+        result.append('</table>')
+        return '\n'.join(result)
+
     def __iter__(self):
         pixels = self.content.load()
         for y in range(self.size[1]):
