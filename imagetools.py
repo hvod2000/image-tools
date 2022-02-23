@@ -66,7 +66,7 @@ class Image:
                 draw.point((x, y), palette[closest_color])
         return Image(result, palette)
 
-    def create_palette(self, palette_size = 8):
+    def create_palette_using_kmeans(self, palette_size):
         import random
         colors = []
         pixels = self.content.load()
@@ -74,7 +74,17 @@ class Image:
             for x in range(self.size[0]):
                 colors.append(pixels[x, y])
         random.shuffle(colors)
-        return dict(enumerate(tuple(max(min(round(x), 255), 0) for x in color) for color in kmeans(colors, palette_size)))
+        return {f'color{number}': color for number, color in enumerate(tuple(max(min(round(x), 255), 0) for x in color) for color in kmeans(colors, palette_size))}
+
+    def create_palette(self, palette_size = None):
+        if palette_size:
+            return self.create_palette_using_kmeans(palette_size)
+        colors = set()
+        pixels = self.content.load()
+        for y in range(self.size[1]):
+            for x in range(self.size[0]):
+                colors.add(pixels[x, y])
+        return {f'color{i}':c for i, c in enumerate(colors)}
 
     def __iter__(self):
         pixels = self.content.load()
