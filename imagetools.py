@@ -36,6 +36,7 @@ class Image:
         result = PIL.Image.new("RGB", size)
         draw = PIL.ImageDraw.Draw(result)
         old_pixels = self.content.load()
+        radius = min(radius, min(int(self.size[i] / result.size[i] / 2 - 0.5) for i in range(2)))
         for y in range(result.size[1]):
             y_old = int((y + 0.5) * self.size[1] / result.size[1])
             for x in range(result.size[0]):
