@@ -6,7 +6,7 @@ class Image:
     def __init__(self, content, palette=None):
         self.size = content.size
         self.content = content
-        salf.palette = palette
+        self.palette = palette
 
     @staticmethod
     def load(path):
