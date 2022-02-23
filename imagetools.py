@@ -86,6 +86,16 @@ class Image:
                 colors.add(pixels[x, y])
         return {f'color{i}':c for i, c in enumerate(colors)}
 
+    def to_css(self):
+        assert self.palette
+        colors = list(sorted(self.palette.items()))
+        result = []
+        for color_name, color in colors:
+            result.append(f'table.pixelart tr td.{color_name} ' + '{')
+            result.append(f'\tbackground-color: #{color2hex(color)};')
+            result.append('}')
+        return '\n'.join(result)
+
     def to_html(self):
         assert self.palette
         color2name = {rgb: color_name for color_name, rgb in self.palette.items()}
