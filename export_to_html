@@ -5,7 +5,11 @@ from pathlib import Path
 import sys
 
 img = Image.load(sys.argv[1])
-img = img.apply_the_palette(img.create_palette())
+if len(sys.argv) > 2:
+    palette = eval("{" + sys.argv[2] + "}")
+else:
+    palette = img.create_palette()
+img = img.apply_the_palette(palette)
 html = img.to_html()
 html = f"<html><head><link rel=\"stylesheet\" href=\"styles.css\"></head><body>{html}</body></html>"
 Path('index.html').write_text(html)
