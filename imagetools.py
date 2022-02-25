@@ -91,7 +91,7 @@ class Image:
         colors = list(sorted(self.palette.items()))
         result = []
         for color_name, color in colors:
-            result.append(f'table.pixelart tr td.{color_name} ' + '{')
+            result.append(f'table.pixelart *.{color_name} ' + '{')
             result.append(f'\tbackground-color: #{color2hex(color)};')
             result.append('}')
         return '\n'.join(result)
@@ -102,10 +102,14 @@ class Image:
         pixels = self.content.load()
         result = ['<table class=pixelart>']
         for y in range(self.size[1]):
-            result.append('\t<tr>')
+            row_color = color2name[pixels[0, y]]
+            result.append(f'\t<tr class="{row_color}">')
             for x in range(self.size[0]):
                 color = color2name[pixels[x, y]]
-                result.append(f'\t\t<td class="{color}" />')
+                if color != row_color:
+                    result.append(f'\t\t<td class="{color}" />')
+                else:
+                    result.append(f'\t\t<td/>')
             result.append('\t</tr>')
         result.append('</table>')
         return '\n'.join(result)
