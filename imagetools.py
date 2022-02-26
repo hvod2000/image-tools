@@ -50,7 +50,25 @@ class Image:
         return Image(result, self.palette)
 
     def smooth_resize(self, size):
-        return pixelize(self, size)
+        result = PIL.Image.new("RGB", size)
+        draw = PIL.ImageDraw.Draw(result)
+        old_pixels = self.content.load()
+        for y in range(result.size[1]):
+            y0 = y * self.size[1] // result.size[1]
+            y1 = min((y + 1) * self.size[1] // result.size[1], y0 + 1)
+            for x in range(result.size[0]):
+                x0 = x * self.size[0] // result.size[0]
+                x1 = min((x + 1) * self.size[0] // result.size[0], x0 + 1)
+                color_sum = [0] * 3
+                for yi in range(y0, y1):
+                    for xi in range(x0, x1):
+                        color = old_pixels[xi, yi]
+                        for i in range(len(color)):
+                            color_sum[i] += color[i]
+                color_count = (y1 - y0) * (x1 - x0)
+                new_color = tuple(round(c / color_count) for c in color_sum)
+                draw.point((x, y), new_color)
+        return Image(result, self.palette)
 
     def apply_the_palette(self, palette):
         result = PIL.Image.new("RGB", self.size)
