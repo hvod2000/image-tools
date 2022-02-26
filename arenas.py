@@ -20,3 +20,6 @@ class Arena:
 
     def __delitem__(self, ind):
         del self.content[ind]
+
+    def __iter__(self):
+        yield from self.content.values()
