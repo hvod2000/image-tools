@@ -26,6 +26,25 @@ class OctreeNode:
         for point in points:
             self.push(minimum, supremum, point)
 
+    def contains(self, minimum, supremum, point):
+        if isinstance(self.children, set):
+            return point in self.children
+        x, y, z = point
+        x0, y0, z0 = minimum
+        x2, y2, z2 = supremum
+        x1, y1, z1 = ((x0 + x2) // 2 for x0, x2 in zip(minimum, supremum))
+        child = (int(x >= x1), int(y >= y1), int(z >= z1))
+        x0, y0, z0 = [x0, x1][child[0]], [y0, y1][child[1]], [z0, z1][child[2]]
+        x2, y2, z2 = [x1, x2][child[0]], [y1, y2][child[1]], [z1, z2][child[2]]
+        return self.children[child].contains((x0, y0, z0), (x2, y2, z2), point)
+
+    def __iter__(self):
+        if isinstance(self.children, set):
+            yield from self.children
+        else:
+            for child in self.children.values():
+                yield from child
+
 class Octree:
     def __init__(self, minimum, supremum, points=()):
         self.root = OctreeNode()
@@ -36,3 +55,9 @@ class Octree:
 
     def push(self, p):
         self.root.push(self.minimum, self.supremum, p)
+
+    def __contains__(self, p):
+        return self.root.contains(self.minimum, self.supremum, p)
+
+    def __iter__(self):
+        yield from self.root
