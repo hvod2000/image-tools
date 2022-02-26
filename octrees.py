@@ -25,3 +25,14 @@ class OctreeNode:
         self.children = {p : OctreeNode() for p in product(range(2), repeat=3)}
         for point in points:
             self.push(minimum, supremum, point)
+
+class Octree:
+    def __init__(self, minimum, supremum, points=()):
+        self.root = OctreeNode()
+        self.minimum = minimum
+        self.supremum = supremum
+        for point in points:
+            self.push(point)
+
+    def push(self, p):
+        self.root.push(self.minimum, self.supremum, p)
