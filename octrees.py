@@ -33,6 +33,15 @@ class OctreeNode:
         node = self.find_node(minimum, supremum, point)
         return point in node.children
 
+    def get_preleafs(self):
+        if isinstance(self.children, set):
+            return
+        if all(isinstance(c.children, set) for c in self.children):
+            yield self
+            return
+        for child in self.children:
+            yield from child.get_preleafs()
+
     def __iter__(self):
         if isinstance(self.children, set):
             yield from self.children
