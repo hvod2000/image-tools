@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+
+from imagetools import Image
+from pathlib import Path
+import sys
+
+def c(code):
+    return (code // (2**16), (code // 256) % 256, code % 256)
+
+img = Image.load(sys.argv[1])
+palette = eval("{" + sys.argv[2] + "}")
+img = img.apply_the_palette(palette)
+img.save(sys.argv[3])
