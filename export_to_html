@@ -4,6 +4,9 @@ from imagetools import Image
 from pathlib import Path
 import sys
 
+def c(code):
+    return (code // (2**16), (code // 256) % 256, code % 256)
+
 img = Image.load(sys.argv[1])
 if len(sys.argv) > 2:
     palette = eval("{" + sys.argv[2] + "}")
