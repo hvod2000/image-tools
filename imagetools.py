@@ -78,12 +78,16 @@ class Image:
         return Image(result, self.palette)
 
     def apply_the_palette(self, palette):
+        palette_colors = set(palette.values())
         result = PIL.Image.new("RGB", self.size)
         draw = PIL.ImageDraw.Draw(result)
         old_pixels = self.content.load()
         for y in range(result.size[1]):
             for x in range(result.size[0]):
                 pixel = old_pixels[x, y]
+                if pixel in palette_colors:
+                    draw.point((x, y), pixel)
+                    continue
                 closest_color = None
                 min_dist = inf
                 for color_name, color in palette.items():
