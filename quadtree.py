@@ -27,3 +27,14 @@ def square2tree(pixels):
     tree = [color for color, _ in colors.items()]
     tree = [col for _, col in sorted((i, color) for color, i in colors.items())]
     return real_colors, tree, pixels[0][0]
+
+
+def tree2squad(colors, tree, img, size):
+    result = [[None] * size for _ in range(size)]
+    for y in range(size):
+        for x in range(size):
+            ind = img
+            for k in range(size.bit_length() - 2, -1, -1):
+                ind = tree[ind][((x >> k) & 1) + 2 * ((y >> k) & 1)]
+            result[x][y] = colors[ind]
+    return result
