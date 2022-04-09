@@ -3,6 +3,12 @@ class Image:
         self.size = size
         self.pixels = pixels
 
+    def get(self, x, y, default=None):
+        try:
+            return self.pixels[x][y]
+        except Exception:
+            return default
+
     def __getitem__(self, indexes):
         x, y = indexes
         return self.pixels[x][y]
