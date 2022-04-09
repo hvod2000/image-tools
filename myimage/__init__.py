@@ -1,9 +1,9 @@
 import inspect
 from functools import partial
 from .image import Image
-from . import prettyprinter, filemanager
+from . import prettyprinter, filemanager, quadtree
 
-for methods in [prettyprinter, filemanager]:
+for methods in [prettyprinter, filemanager, quadtree]:
     for name, f in methods.__dict__.items():
         if not callable(f):
             continue
