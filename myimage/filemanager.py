@@ -15,7 +15,7 @@ def transpose(array):
 
 
 def load(path):
-    image = PIL.Image.open(path)
+    image = PIL.Image.open(path).convert("RGB")
     size = image.size[0]
     pixes = image.load()
     result = []
