@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+import sys
+from myimage import Image
+
+for target in sys.argv[1:]:
+    img = Image.load(target)
+    img.show()
