@@ -8,7 +8,8 @@ def str_column(lower, upper):
 
 
 def show(image):
-    for y in range((image.size + 1) // 2 * 2 - 1, 0, -2):
-        for x in range(image.size):
+    width, height = image.size
+    for y in range((height + 1) // 2 * 2 - 1, 0, -2):
+        for x in range(width):
             print(end=str_column(image.get(x, y - 1), image.get(x, y)))
         print()

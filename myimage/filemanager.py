@@ -16,11 +16,11 @@ def transpose(array):
 
 def load(path):
     image = PIL.Image.open(path).convert("RGB")
-    size = image.size[0]
+    size = image.size
     pixes = image.load()
     result = []
-    for y in range(size):
-        result.append([pixes[x, y] for x in range(size)])
+    for y in range(size[1]):
+        result.append([pixes[x, y] for x in range(size[0])])
     return Image(transpose(invert_y(result)), size)
 
 

@@ -14,7 +14,7 @@ class Quadtree:
 
 
 def to_tree(image):
-    pixels, w = image.pixels, image.size
+    pixels, w = image.pixels, min(image.size)
     colors = list(sorted({pixels[x][y] for y in range(w) for x in range(w)}))
     tiles = {(i, i, i, i): i for i in range(len(colors))}
     color2ind = {color: i for i, color in enumerate(colors)}
@@ -47,4 +47,4 @@ def from_tree(tree):
             for k in range(size.bit_length() - 2, -1, -1):
                 ind = tiles[ind][((x >> k) & 1) + 2 * ((y >> k) & 1)]
             result[y][x] = colors[ind]
-    return Image(result, len(result))
+    return Image(result, (len(result), len(result)))
