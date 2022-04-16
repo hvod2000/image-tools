@@ -26,10 +26,9 @@ def load(path):
 
 def save(image, path):
     size = image.size
-    array = invert_y(transpose(image.pixels))
-    result = PIL.Image.new("RGB", (size, size))
+    result = PIL.Image.new("RGB", size)
     draw = PIL.ImageDraw.Draw(result)
     for y in range(result.size[1]):
         for x in range(result.size[0]):
-            draw.point((x, y), array[x][y])
+            draw.point((x, y), image[x][size[1] - 1 - y])
     result.save(path)
