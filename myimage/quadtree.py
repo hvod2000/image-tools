@@ -34,12 +34,12 @@ def to_tree(image):
                 new_tilemap[x // 2][y // 2] = tiles[tile]
         tilemap = new_tilemap
     assert tilemap[0][0] == len(tiles) - 1
-    return Quadtree(colors, list(tiles)[len(colors):], w)
+    return Quadtree(colors, list(tiles)[len(colors) :], w)
 
 
 def from_tree(tree):
     colors, tiles, size = tree.colors, tree.tiles, tree.size
-    tiles = [(i, i,i, i) for i in range(len(colors))] + tiles
+    tiles = [(i, i, i, i) for i in range(len(colors))] + tiles
     result = [[None] * size for _ in range(size)]
     for x in range(size):
         for y in range(size):
