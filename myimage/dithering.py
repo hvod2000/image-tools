@@ -1,5 +1,5 @@
 from contextlib import suppress
-from random import choices, randint
+from random import choices, randint, shuffle
 from .array2d import Array2d
 from .image import Image
 
@@ -31,6 +31,12 @@ def threshold(x, y, lvl):
 def generate_threshold_map(lvl):
     line = list(range(2 ** lvl))
     return [[threshold(x, y, lvl) for x in line] for y in line]
+
+
+def random_threshold_map():
+    m = list(range(256))
+    shuffle(m)
+    return [[m[y * 16 + x] for x in range(16)] for y in range(16)]
 
 
 def gray(color):
@@ -435,6 +441,21 @@ def dithering_by_threshold_map_16(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
+            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            target_color = (color > threshold_map[x % 16][y % 16]) * 255
+            result[x, y] = (target_color,) * 3
+    return Image(result, (width, height))
+
+
+@dithering_method("randompattern")
+def randompattern_dithering(image):
+    width, height = image.size
+    threshold_maps = (width + 15) // 16 * ((height + 15) // 16)
+    threshold_maps = [random_threshold_map() for _ in range(threshold_maps)]
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            threshold_map = threshold_maps[x // 16 + (y // 16) * 16]
             color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
             target_color = (color > threshold_map[x % 16][y % 16]) * 255
             result[x, y] = (target_color,) * 3
