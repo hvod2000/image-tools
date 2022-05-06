@@ -74,3 +74,17 @@ def randomshift_dithering(image):
             target_color = (color + randint(-128, 128) >= 128) * 255
             result[x][y] = (target_color,) * 3
     return Image(result, (width, height))
+
+
+@dithering_method("linear")
+def linear_dithering(image):
+    width, height = image.size
+    result = [[None] * height for x in range(width)]
+    for y in range(height):
+        error = 0
+        for x in range(width):
+            color = gray(image[x, y]) + error
+            target_color = (color >= 128) * 255
+            error = color - target_color
+            result[x][y] = (target_color,) * 3
+    return Image(result, (width, height))
