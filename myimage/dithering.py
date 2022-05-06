@@ -1,4 +1,4 @@
-from random import choices
+from random import choices, randint
 from .image import Image
 
 __all__ = ["dithering"]
@@ -60,5 +60,17 @@ def random_dithering(image):
         for x in range(width):
             color = gray(image[x, y])
             target_color = choices((255, 0), (color, 255 - color))[0]
+            result[x][y] = (target_color,) * 3
+    return Image(result, (width, height))
+
+
+@dithering_method("randomshift")
+def randomshift_dithering(image):
+    width, height = image.size
+    result = [[None] * height for x in range(width)]
+    for y in range(height):
+        for x in range(width):
+            color = gray(image[x, y])
+            target_color = (color + randint(-128, 128) >= 128) * 255
             result[x][y] = (target_color,) * 3
     return Image(result, (width, height))
