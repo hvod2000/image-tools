@@ -148,3 +148,40 @@ def Jarvis_Judice_Nink_dithering(image):
             with suppress(IndexError):
                 result[x + 2, y - 2] += error * 1
     return Image(result, (width, height))
+
+
+@dithering_method("Stucki")
+def Stucki_dithering(image):
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) + (result[x, y] + 21) // 42
+            target_color = (color >= 128) * 255
+            error = color - target_color
+            result[x, y] = (target_color,) * 3
+            with suppress(IndexError):
+                result[x + 1, y + 0] += error * 8
+            with suppress(IndexError):
+                result[x + 2, y + 0] += error * 4
+            with suppress(IndexError):
+                result[x - 2, y - 1] += error * 2
+            with suppress(IndexError):
+                result[x - 1, y - 1] += error * 4
+            with suppress(IndexError):
+                result[x + 0, y - 1] += error * 8
+            with suppress(IndexError):
+                result[x + 1, y - 1] += error * 4
+            with suppress(IndexError):
+                result[x + 2, y - 1] += error * 2
+            with suppress(IndexError):
+                result[x - 2, y - 2] += error * 1
+            with suppress(IndexError):
+                result[x - 1, y - 2] += error * 2
+            with suppress(IndexError):
+                result[x + 0, y - 2] += error * 4
+            with suppress(IndexError):
+                result[x + 1, y - 2] += error * 2
+            with suppress(IndexError):
+                result[x + 2, y - 2] += error * 1
+    return Image(result, (width, height))
