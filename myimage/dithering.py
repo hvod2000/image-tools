@@ -222,3 +222,34 @@ def Stevenson_Arce_dithering(image):
             with suppress(IndexError):
                 result[x + 3, y - 3] += error * 5
     return Image(result, (width, height))
+
+
+@dithering_method("Atkinson")
+def Atkinson_dithering(image):
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) + (result[x, y] + 4) // 8
+            target_color = (color >= 128) * 255
+            error = color - target_color
+            result[x, y] = (target_color,) * 3
+            with suppress(IndexError):
+                result[x + 1, y + 0] += error
+            with suppress(IndexError):
+                result[x + 2, y + 0] += error
+            # with suppress(IndexError): result[x - 2, y - 1] += error
+            with suppress(IndexError):
+                result[x - 1, y - 1] += error
+            with suppress(IndexError):
+                result[x + 0, y - 1] += error
+            with suppress(IndexError):
+                result[x + 1, y - 1] += error
+            # with suppress(IndexError): result[x + 2, y - 1] += error
+            # with suppress(IndexError): result[x - 2, y - 2] += error
+            # with suppress(IndexError): result[x - 1, y - 2] += error
+            with suppress(IndexError):
+                result[x + 0, y - 2] += error
+            # with suppress(IndexError): result[x + 1, y - 2] += error
+            # with suppress(IndexError): result[x + 2, y - 2] += error
+    return Image(result, (width, height))
