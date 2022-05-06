@@ -460,3 +460,51 @@ def randompattern_dithering(image):
             target_color = (color > threshold_map[x % 16][y % 16]) * 255
             result[x, y] = (target_color,) * 3
     return Image(result, (width, height))
+
+
+@dithering_method("recursive")
+def recursive_error_propagation_dithering(image):
+    def rec(x, y, lvl, error):
+        if lvl == -1:
+            try:
+                color = gray(image[x, y]) + error
+            except IndexError:
+                return error
+            target_color = (color >= 128) * 255
+            error = color - target_color
+            result[x, y] = (target_color,) * 3
+            return error
+        error = rec(x, y, lvl - 1, error)
+        error = rec(x + 2 ** lvl, y, lvl - 1, error)
+        error = rec(x + 2 ** lvl, y + 2 ** lvl, lvl - 1, error)
+        error = rec(x, y + 2 ** lvl, lvl - 1, error)
+        return error
+
+    width, height = image.size
+    result = Array2d((image[x, y] for y in range(height)) for x in range(width))
+    rec(0, 0, max(ilog(width), ilog(height)), 0)
+    return Image(result, (width, height))
+
+
+@dithering_method("recursive-2")
+def recursive_two_row_error_propagation_dithering(image):
+    def rec(x, y, lvl, error):
+        if lvl == -1:
+            try:
+                color = gray(image[x, y]) + error
+            except IndexError:
+                return error
+            target_color = (color >= 128) * 255
+            error = color - target_color
+            result[x, y] = (target_color,) * 3
+            return error
+        err1 = rec(x, y, lvl - 1, error)
+        err2 = rec(x + 2 ** lvl, y, lvl - 1, err1 // 2)
+        err3 = rec(x, y + 2 ** lvl, lvl - 1, err1 // 2)
+        err4 = rec(x + 2 ** lvl, y + 2 ** lvl, lvl - 1, err2 + err3)
+        return err4
+
+    width, height = image.size
+    result = Array2d((image[x, y] for y in range(height)) for x in range(width))
+    rec(0, 0, max(ilog(width), ilog(height)), 0)
+    return Image(result, (width, height))
