@@ -43,6 +43,7 @@ def random_threshold_map():
 
 def gray(color):
     r, g, b = color
+    return round(r * 0.2989 + g * 0.5870 + b * 0.1140) # BT.601
     return round(r * 0.2126 + g * 0.7152 + b * 0.0722) # BT.709
     return (max(color) + min(color)) // 2 # formula from habr
     return sum(color) // 3 # my very original formula
