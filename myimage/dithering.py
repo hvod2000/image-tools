@@ -1,4 +1,6 @@
+from contextlib import suppress
 from random import choices, randint
+from .array2d import Array2d
 from .image import Image
 
 __all__ = ["dithering"]
@@ -87,4 +89,25 @@ def linear_dithering(image):
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x][y] = (target_color,) * 3
+    return Image(result, (width, height))
+
+
+@dithering_method("FS")
+def Floyd_Steinberg_dithering(image):
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) + result[x][y]
+            target_color = (color >= 128) * 255
+            error = color - target_color
+            result[x, y] = (target_color,) * 3
+            with suppress(IndexError):
+                result[x + 1, y - 0] += error * 7 / 16
+            with suppress(IndexError):
+                result[x - 1, y - 1] += error * 3 / 16
+            with suppress(IndexError):
+                result[x + 0, y - 1] += error * 5 / 16
+            with suppress(IndexError):
+                result[x + 1, y - 1] += error * 1 / 16
     return Image(result, (width, height))
