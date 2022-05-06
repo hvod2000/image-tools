@@ -3,7 +3,7 @@ from random import choices, randint, shuffle
 from .hilbertcurve import hilbert
 from .array2d import Array2d
 from .image import Image
-from .bluenoise import blue_noise
+from .bluenoise import noise32
 
 __all__ = ["dithering"]
 DITHERING_METHODS = {}
@@ -559,12 +559,12 @@ def riemersma32_dithering(image):
 
 @dithering_method("blue-noise")
 def bluenoise_dithering(image):
-    threshold_map = blue_noise
+    threshold_map = noise32
     width, height = image.size
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
-            target_color = (color > threshold_map[x % 16][y % 16]) * 255
+            color = gray(image[x, y])
+            target_color = (color > threshold_map[x % 32][y % 32]) * 255
             result[x, y] = (target_color,) * 3
     return Image(result, (width, height))
