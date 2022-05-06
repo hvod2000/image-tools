@@ -42,9 +42,9 @@ def random_threshold_map():
 
 def gray(color):
     r, g, b = color
-    return round(r * 0.2126 + g * 0.7152 + b * 0.0722)
-    return (max(color) + min(color)) // 2
-    return sum(color) // 3
+    return round(r * 0.2126 + g * 0.7152 + b * 0.0722) # BT.709
+    return (max(color) + min(color)) // 2 # formula from habr
+    return sum(color) // 3 # my very original formula
 
 
 def dithering(image, method):
