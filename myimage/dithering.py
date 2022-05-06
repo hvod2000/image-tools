@@ -1,5 +1,6 @@
 from contextlib import suppress
 from random import choices, randint, shuffle
+from .hilbertcurve import hilbert
 from .array2d import Array2d
 from .image import Image
 
@@ -507,4 +508,47 @@ def recursive_two_row_error_propagation_dithering(image):
     width, height = image.size
     result = Array2d((image[x, y] for y in range(height)) for x in range(width))
     rec(0, 0, max(ilog(width), ilog(height)), 0)
+    return Image(result, (width, height))
+
+
+def riemersma_weights(ratio, size):
+    weights = [ratio ** (i / (size - 1) - 1) for i in range(size)]
+    return [w / sum(weights) for w in weights]
+
+
+@dithering_method("riemersma-16")
+def riemersma16_dithering(image):
+    weights = riemersma_weights(1 / 16, 16)
+    width, height = image.size
+    result = Array2d((image[x, y] for y in range(height)) for x in range(width))
+    errors = [0] * 16
+    for x, y in hilbert(max(ilog(width), ilog(height))):
+        with suppress(IndexError):
+            color = gray(image[x, y])
+            error = errors.pop(0)
+            target_color = (color + error >= 128) * 255
+            result[x, y] = (target_color,) * 3
+            error += color - target_color
+            errors.append(0)
+            for i, w in enumerate(weights):
+                errors[i] += w * error
+    return Image(result, (width, height))
+
+
+@dithering_method("riemersma-32")
+def riemersma32_dithering(image):
+    weights = riemersma_weights(1 / 8, 32)
+    width, height = image.size
+    result = Array2d((image[x, y] for y in range(height)) for x in range(width))
+    errors = [0] * 16
+    for x, y in hilbert(max(ilog(width), ilog(height))):
+        with suppress(IndexError):
+            color = gray(image[x, y])
+            error = errors.pop(0)
+            target_color = (color + error >= 128) * 255
+            result[x, y] = (target_color,) * 3
+            error += color - target_color
+            errors.append(0)
+            for i, w in enumerate(weights):
+                errors[i] += w * error
     return Image(result, (width, height))
