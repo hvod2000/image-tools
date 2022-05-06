@@ -388,7 +388,7 @@ def Sierra_lite_dithering(image):
 
 @dithering_method("Bayer-2")
 def dithering_by_threshold_map_2(image):
-    threshold_map = [[0, 2], [3, 1]]
+    threshold_map = generate_threshold_map(1)
     width, height = image.size
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
@@ -401,12 +401,7 @@ def dithering_by_threshold_map_2(image):
 
 @dithering_method("Bayer-4")
 def dithering_by_threshold_map_4(image):
-    threshold_map = [
-        [0, 8, 2, 10],
-        [12, 4, 14, 6],
-        [3, 11, 1, 9],
-        [15, 7, 13, 5],
-    ]
+    threshold_map = generate_threshold_map(2)
     width, height = image.size
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
@@ -419,16 +414,7 @@ def dithering_by_threshold_map_4(image):
 
 @dithering_method("Bayer-8")
 def dithering_by_threshold_map_8(image):
-    threshold_map = [
-        [0, 48, 12, 60, 3, 51, 15, 63],
-        [32, 16, 44, 28, 35, 19, 47, 31],
-        [8, 56, 4, 52, 11, 59, 7, 55],
-        [40, 24, 36, 20, 43, 27, 39, 23],
-        [2, 50, 14, 62, 1, 49, 13, 61],
-        [34, 18, 46, 30, 33, 17, 45, 29],
-        [10, 58, 6, 54, 9, 57, 5, 53],
-        [42, 26, 38, 22, 41, 25, 37, 21],
-    ]
+    threshold_map = generate_threshold_map(3)
     width, height = image.size
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
