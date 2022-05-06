@@ -373,3 +373,69 @@ def Sierra_lite_dithering(image):
             with suppress(IndexError):
                 result[x + 0, y - 1] += error
     return Image(result, (width, height))
+
+
+@dithering_method("ordered-2")
+def dithering_by_threshold_map_2(image):
+    threshold_map = [[0, 2], [3, 1]]
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            target_color = (color > threshold_map[x % 2][y % 2]) * 255
+            result[x, y] = (target_color,) * 3
+    return Image(result, (width, height))
+
+
+@dithering_method("ordered-4")
+def dithering_by_threshold_map_4(image):
+    threshold_map = [
+        [0, 8, 2, 10],
+        [12, 4, 14, 6],
+        [3, 11, 1, 9],
+        [15, 7, 13, 5],
+    ]
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            target_color = (color > threshold_map[x % 4][y % 4]) * 255
+            result[x, y] = (target_color,) * 3
+    return Image(result, (width, height))
+
+
+@dithering_method("ordered-8")
+def dithering_by_threshold_map_8(image):
+    threshold_map = [
+        [0, 48, 12, 60, 3, 51, 15, 63],
+        [32, 16, 44, 28, 35, 19, 47, 31],
+        [8, 56, 4, 52, 11, 59, 7, 55],
+        [40, 24, 36, 20, 43, 27, 39, 23],
+        [2, 50, 14, 62, 1, 49, 13, 61],
+        [34, 18, 46, 30, 33, 17, 45, 29],
+        [10, 58, 6, 54, 9, 57, 5, 53],
+        [42, 26, 38, 22, 41, 25, 37, 21],
+    ]
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            target_color = (color > threshold_map[x % 8][y % 8]) * 255
+            result[x, y] = (target_color,) * 3
+    return Image(result, (width, height))
+
+
+@dithering_method("ordered-16")
+def dithering_by_threshold_map_16(image):
+    threshold_map = generate_threshold_map(4)
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            target_color = (color > threshold_map[x % 16][y % 16]) * 255
+            result[x, y] = (target_color,) * 3
+    return Image(result, (width, height))
