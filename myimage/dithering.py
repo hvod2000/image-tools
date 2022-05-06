@@ -282,6 +282,43 @@ def Burkes_dithering(image):
     return Image(result, (width, height))
 
 
+@dithering_method("Sierra-2")
+def tworow_Sierra_dithering(image):
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) + (result[x, y] + 8) // 16
+            target_color = (color >= 128) * 255
+            error = color - target_color
+            result[x, y] = (target_color,) * 3
+            with suppress(IndexError):
+                result[x + 1, y + 0] += error * 4
+            with suppress(IndexError):
+                result[x + 2, y + 0] += error * 3
+            with suppress(IndexError):
+                result[x - 2, y - 1] += error * 1
+            with suppress(IndexError):
+                result[x - 1, y - 1] += error * 2
+            with suppress(IndexError):
+                result[x + 0, y - 1] += error * 3
+            with suppress(IndexError):
+                result[x + 1, y - 1] += error * 2
+            with suppress(IndexError):
+                result[x + 2, y - 1] += error * 1
+            with suppress(IndexError):
+                result[x - 2, y - 2] += error * 0
+            with suppress(IndexError):
+                result[x - 1, y - 2] += error * 0
+            with suppress(IndexError):
+                result[x + 0, y - 2] += error * 0
+            with suppress(IndexError):
+                result[x + 1, y - 2] += error * 0
+            with suppress(IndexError):
+                result[x + 2, y - 2] += error * 0
+    return Image(result, (width, height))
+
+
 @dithering_method("Sierra-1")
 def Sierra_lite_dithering(image):
     width, height = image.size
