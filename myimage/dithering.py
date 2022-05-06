@@ -5,6 +5,31 @@ DITHERING_METHODS = {}
 dithering_method = lambda name: lambda f: DITHERING_METHODS.setdefault(name, f)
 
 
+def ilog(number, base=2):
+    result = 0
+    y = 1
+    while number > y:
+        result += 1
+        y *= base
+    return result
+
+
+def bits(number, bit_length=None):
+    bit_length = number.bit_length() if bit_length is None else bit_length
+    bits = bin(number)[2:].rjust(bit_length, "0")
+    return map(int, bits)
+
+
+def threshold(x, y, lvl):
+    b = [x * 2 + y for x, y in zip(bits(x ^ y, lvl), bits(y, lvl))]
+    return sum(x * 4 ** i for i, x in enumerate(b))
+
+
+def generate_threshold_map(lvl):
+    line = list(range(2 ** lvl))
+    return [[threshold(x, y, lvl) for x in line] for y in line]
+
+
 def gray(color):
     return (max(color) + min(color)) // 2
     return sum(color) // 3
