@@ -111,3 +111,40 @@ def Floyd_Steinberg_dithering(image):
             with suppress(IndexError):
                 result[x + 1, y - 1] += error * 1 / 16
     return Image(result, (width, height))
+
+
+@dithering_method("JJN")
+def Jarvis_Judice_Nink_dithering(image):
+    width, height = image.size
+    result = Array2d([[0] * height for x in range(width)])
+    for y in range(height - 1, -1, -1):
+        for x in range(width):
+            color = gray(image[x, y]) + (result[x, y] + 24) // 48
+            target_color = (color >= 128) * 255
+            error = color - target_color
+            result[x, y] = (target_color,) * 3
+            with suppress(IndexError):
+                result[x + 1, y + 0] += error * 7
+            with suppress(IndexError):
+                result[x + 2, y + 0] += error * 5
+            with suppress(IndexError):
+                result[x - 2, y - 1] += error * 3
+            with suppress(IndexError):
+                result[x - 1, y - 1] += error * 5
+            with suppress(IndexError):
+                result[x + 0, y - 1] += error * 7
+            with suppress(IndexError):
+                result[x + 1, y - 1] += error * 5
+            with suppress(IndexError):
+                result[x + 2, y - 1] += error * 3
+            with suppress(IndexError):
+                result[x - 2, y - 2] += error * 1
+            with suppress(IndexError):
+                result[x - 1, y - 2] += error * 3
+            with suppress(IndexError):
+                result[x + 0, y - 2] += error * 5
+            with suppress(IndexError):
+                result[x + 1, y - 2] += error * 3
+            with suppress(IndexError):
+                result[x + 2, y - 2] += error * 1
+    return Image(result, (width, height))
