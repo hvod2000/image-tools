@@ -386,7 +386,7 @@ def Sierra_lite_dithering(image):
     return Image(result, (width, height))
 
 
-@dithering_method("ordered-2")
+@dithering_method("Bayer-2")
 def dithering_by_threshold_map_2(image):
     threshold_map = [[0, 2], [3, 1]]
     width, height = image.size
@@ -399,7 +399,7 @@ def dithering_by_threshold_map_2(image):
     return Image(result, (width, height))
 
 
-@dithering_method("ordered-4")
+@dithering_method("Bayer-4")
 def dithering_by_threshold_map_4(image):
     threshold_map = [
         [0, 8, 2, 10],
@@ -417,7 +417,7 @@ def dithering_by_threshold_map_4(image):
     return Image(result, (width, height))
 
 
-@dithering_method("ordered-8")
+@dithering_method("Bayer-8")
 def dithering_by_threshold_map_8(image):
     threshold_map = [
         [0, 48, 12, 60, 3, 51, 15, 63],
@@ -439,7 +439,7 @@ def dithering_by_threshold_map_8(image):
     return Image(result, (width, height))
 
 
-@dithering_method("ordered-16")
+@dithering_method("Bayer-16")
 def dithering_by_threshold_map_16(image):
     threshold_map = generate_threshold_map(4)
     width, height = image.size
