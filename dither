@@ -7,6 +7,7 @@ lena = myimage.Image.load(sys.argv[1])
 total_dt = 0
 for method in myimage.dithering.DITHERING_METHODS:
     print(f"{method:15}", end="- ")
+    sys.stdout.flush()
     t0 = time.time()
     lena.dithering(method).save(sys.argv[2] + "/" + method + ".png")
     dt = (time.time() - t0) * 1000
