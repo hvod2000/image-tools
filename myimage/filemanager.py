@@ -1,4 +1,5 @@
-from .myimage import Image
+from importlib import import_module
+Image = import_module("." + __package__, __package__).Image
 import PIL.Image, PIL.ImageDraw
 
 __all__ = ["load", "save"]

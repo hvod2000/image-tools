@@ -1,5 +1,5 @@
-from .myimage import Image
-
+from importlib import import_module
+Image = import_module("." + __package__, __package__).Image
 __all__ = ["to_tree", "from_tree"]
 
 

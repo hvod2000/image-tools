@@ -2,8 +2,9 @@ from contextlib import suppress
 from random import choices, randint, shuffle
 from .libs.hilbertcurve import hilbert
 from .libs.array2d import Array2d
-from .myimage import Image
 from .libs.bluenoise import noise32
+from importlib import import_module
+Image = import_module("." + __package__, __package__).Image
 
 __all__ = ["dithering"]
 DITHERING_METHODS = {}
