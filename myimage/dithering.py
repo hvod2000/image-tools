@@ -10,6 +10,13 @@ Image = import_module("." + __package__, __package__).Image
 __all__ = ["dithering"]
 DITHERING_METHODS = {}
 dithering_method = lambda name: lambda f: DITHERING_METHODS.setdefault(name, f)
+GRAYSCALE_METHODS = {
+    "BT.601": lambda r, g, b: round(r * 0.2989 + g * 0.5870 + b * 0.1140),
+    "BT.709": lambda r, g, b: round(r * 0.2126 + g * 0.7152 + b * 0.0722),
+    "average": lambda r, g, b: (r + g + b) // 3,
+    "middle": lambda r, g, b: max(r, g, b) - min(r, g, b),
+}
+GRAYSCALE_METHOD = "BT.601"
 
 
 def ilog(number, base=2):
@@ -44,11 +51,7 @@ def random_threshold_map():
 
 
 def gray(color):
-    r, g, b = color
-    return round(r * 0.2989 + g * 0.5870 + b * 0.1140)  # BT.601
-    return round(r * 0.2126 + g * 0.7152 + b * 0.0722)  # BT.709
-    return (max(color) + min(color)) // 2  # formula from habr
-    return sum(color) // 3  # my very original formula
+    return GRAYSCALE_METHODS[GRAYSCALE_METHOD](*color)
 
 
 def dithering(image, method):
