@@ -1,11 +1,12 @@
 from contextlib import suppress
+from importlib import import_module
 from random import choices, randint, shuffle
-from .libs.hilbertcurve import hilbert
+
 from .libs.array2d import Array2d
 from .libs.bluenoise import noise32
-from importlib import import_module
-Image = import_module("." + __package__, __package__).Image
+from .libs.hilbertcurve import hilbert
 
+Image = import_module("." + __package__, __package__).Image
 __all__ = ["dithering"]
 DITHERING_METHODS = {}
 dithering_method = lambda name: lambda f: DITHERING_METHODS.setdefault(name, f)
@@ -28,11 +29,11 @@ def bits(number, bit_length=None):
 
 def threshold(x, y, lvl):
     b = [x * 2 + y for x, y in zip(bits(x ^ y, lvl), bits(y, lvl))]
-    return sum(x * 4 ** i for i, x in enumerate(b))
+    return sum(x * 4**i for i, x in enumerate(b))
 
 
 def generate_threshold_map(lvl):
-    line = list(range(2 ** lvl))
+    line = list(range(2**lvl))
     return [[threshold(x, y, lvl) for x in line] for y in line]
 
 
@@ -44,10 +45,10 @@ def random_threshold_map():
 
 def gray(color):
     r, g, b = color
-    return round(r * 0.2989 + g * 0.5870 + b * 0.1140) # BT.601
-    return round(r * 0.2126 + g * 0.7152 + b * 0.0722) # BT.709
-    return (max(color) + min(color)) // 2 # formula from habr
-    return sum(color) // 3 # my very original formula
+    return round(r * 0.2989 + g * 0.5870 + b * 0.1140)  # BT.601
+    return round(r * 0.2126 + g * 0.7152 + b * 0.0722)  # BT.709
+    return (max(color) + min(color)) // 2  # formula from habr
+    return sum(color) // 3  # my very original formula
 
 
 def dithering(image, method):
@@ -467,9 +468,9 @@ def recursive_error_propagation_dithering(image):
             result[x, y] = (target_color,) * 3
             return error
         error = rec(x, y, lvl - 1, error)
-        error = rec(x + 2 ** lvl, y, lvl - 1, error)
-        error = rec(x + 2 ** lvl, y + 2 ** lvl, lvl - 1, error)
-        error = rec(x, y + 2 ** lvl, lvl - 1, error)
+        error = rec(x + 2**lvl, y, lvl - 1, error)
+        error = rec(x + 2**lvl, y + 2**lvl, lvl - 1, error)
+        error = rec(x, y + 2**lvl, lvl - 1, error)
         return error
 
     width, height = image.size
@@ -491,9 +492,9 @@ def recursive_two_row_error_propagation_dithering(image):
             result[x, y] = (target_color,) * 3
             return error
         err1 = rec(x, y, lvl - 1, error)
-        err2 = rec(x + 2 ** lvl, y, lvl - 1, err1 // 2)
-        err3 = rec(x, y + 2 ** lvl, lvl - 1, err1 // 2)
-        err4 = rec(x + 2 ** lvl, y + 2 ** lvl, lvl - 1, err2 + err3)
+        err2 = rec(x + 2**lvl, y, lvl - 1, err1 // 2)
+        err3 = rec(x, y + 2**lvl, lvl - 1, err1 // 2)
+        err4 = rec(x + 2**lvl, y + 2**lvl, lvl - 1, err2 + err3)
         return err4
 
     width, height = image.size

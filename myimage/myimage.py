@@ -1,5 +1,6 @@
 from .libs.array2d import Array2d
 
+
 class Image:
     def __init__(self, pixels, size):
         if not isinstance(pixels, Array2d):

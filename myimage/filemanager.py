@@ -1,7 +1,9 @@
 from importlib import import_module
-Image = import_module("." + __package__, __package__).Image
-import PIL.Image, PIL.ImageDraw
 
+import PIL.Image
+import PIL.ImageDraw
+
+Image = import_module("." + __package__, __package__).Image
 __all__ = ["load", "save"]
 
 
@@ -10,9 +12,7 @@ def invert_y(array):
 
 
 def transpose(array):
-    return [
-        [array[y][x] for y in range(len(array))] for x in range(len(array[0]))
-    ]
+    return [[array[y][x] for y in range(len(array))] for x in range(len(array[0]))]
 
 
 def load(path):
