@@ -16,7 +16,7 @@ GRAYSCALE_METHODS = {
     "average": lambda r, g, b: (r + g + b) // 3,
     "middle": lambda r, g, b: max(r, g, b) - min(r, g, b),
 }
-GRAYSCALE_METHOD = "BT.601"
+GRAYSCALE_METHOD = GRAYSCALE_METHODS["BT.601"]
 
 
 def ilog(number, base=2):
@@ -50,10 +50,6 @@ def random_threshold_map():
     return [[m[y * 16 + x] for x in range(16)] for y in range(16)]
 
 
-def gray(color):
-    return GRAYSCALE_METHODS[GRAYSCALE_METHOD](*color)
-
-
 def dithering(image, method):
     return DITHERING_METHODS[method](image)
 
@@ -64,7 +60,7 @@ def zero_dithering(image):
     result = [[None] * height for x in range(width)]
     for y in range(height):
         for x in range(width):
-            color = gray(image[x, y])
+            color = GRAYSCALE_METHOD(*image[x, y])
             target_color = (color >= 128) * 255
             result[x][y] = (target_color,) * 3
     return Image(result, (width, height))
@@ -76,7 +72,7 @@ def random_dithering(image):
     result = [[None] * height for x in range(width)]
     for y in range(height):
         for x in range(width):
-            color = gray(image[x, y])
+            color = GRAYSCALE_METHOD(*image[x, y])
             target_color = choices((255, 0), (color, 255 - color))[0]
             result[x][y] = (target_color,) * 3
     return Image(result, (width, height))
@@ -88,7 +84,7 @@ def randomshift_dithering(image):
     result = [[None] * height for x in range(width)]
     for y in range(height):
         for x in range(width):
-            color = gray(image[x, y])
+            color = GRAYSCALE_METHOD(*image[x, y])
             target_color = (color + randint(-128, 128) >= 128) * 255
             result[x][y] = (target_color,) * 3
     return Image(result, (width, height))
@@ -101,7 +97,7 @@ def linear_dithering(image):
     for y in range(height):
         error = 0
         for x in range(width):
-            color = gray(image[x, y]) + error
+            color = GRAYSCALE_METHOD(*image[x, y]) + error
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x][y] = (target_color,) * 3
@@ -114,7 +110,7 @@ def Floyd_Steinberg_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + result[x][y]
+            color = GRAYSCALE_METHOD(*image[x, y]) + result[x][y]
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -135,7 +131,7 @@ def Jarvis_Judice_Nink_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + (result[x, y] + 24) // 48
+            color = GRAYSCALE_METHOD(*image[x, y]) + (result[x, y] + 24) // 48
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -172,7 +168,7 @@ def Stucki_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + (result[x, y] + 21) // 42
+            color = GRAYSCALE_METHOD(*image[x, y]) + (result[x, y] + 21) // 42
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -209,7 +205,7 @@ def Stevenson_Arce_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + (result[x, y] + 100) // 200
+            color = GRAYSCALE_METHOD(*image[x, y]) + (result[x, y] + 100) // 200
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -246,7 +242,7 @@ def Atkinson_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + (result[x, y] + 4) // 8
+            color = GRAYSCALE_METHOD(*image[x, y]) + (result[x, y] + 4) // 8
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -277,7 +273,7 @@ def Burkes_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + (result[x, y] + 16) // 32
+            color = GRAYSCALE_METHOD(*image[x, y]) + (result[x, y] + 16) // 32
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -304,7 +300,7 @@ def Sierra_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + (result[x, y] + 16) // 32
+            color = GRAYSCALE_METHOD(*image[x, y]) + (result[x, y] + 16) // 32
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -341,7 +337,7 @@ def tworow_Sierra_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + (result[x, y] + 8) // 16
+            color = GRAYSCALE_METHOD(*image[x, y]) + (result[x, y] + 8) // 16
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -378,7 +374,7 @@ def Sierra_lite_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) + (result[x, y] + 2) // 4
+            color = GRAYSCALE_METHOD(*image[x, y]) + (result[x, y] + 2) // 4
             target_color = (color >= 128) * 255
             error = color - target_color
             result[x, y] = (target_color,) * 3
@@ -398,7 +394,7 @@ def dithering_by_threshold_map_2(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            color = GRAYSCALE_METHOD(*image[x, y]) / 256 * len(threshold_map) ** 2
             target_color = (color > threshold_map[x % 2][y % 2]) * 255
             result[x, y] = (target_color,) * 3
     return Image(result, (width, height))
@@ -411,7 +407,7 @@ def dithering_by_threshold_map_4(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            color = GRAYSCALE_METHOD(*image[x, y]) / 256 * len(threshold_map) ** 2
             target_color = (color > threshold_map[x % 4][y % 4]) * 255
             result[x, y] = (target_color,) * 3
     return Image(result, (width, height))
@@ -424,7 +420,7 @@ def dithering_by_threshold_map_8(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            color = GRAYSCALE_METHOD(*image[x, y]) / 256 * len(threshold_map) ** 2
             target_color = (color > threshold_map[x % 8][y % 8]) * 255
             result[x, y] = (target_color,) * 3
     return Image(result, (width, height))
@@ -437,7 +433,7 @@ def dithering_by_threshold_map_16(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            color = GRAYSCALE_METHOD(*image[x, y]) / 256 * len(threshold_map) ** 2
             target_color = (color > threshold_map[x % 16][y % 16]) * 255
             result[x, y] = (target_color,) * 3
     return Image(result, (width, height))
@@ -446,13 +442,14 @@ def dithering_by_threshold_map_16(image):
 @dithering_method("randompattern")
 def randompattern_dithering(image):
     width, height = image.size
-    threshold_maps = (width + 15) // 16 * ((height + 15) // 16)
+    offset = (width + 15) // 16
+    threshold_maps = offset * ((height + 15) // 16)
     threshold_maps = [random_threshold_map() for _ in range(threshold_maps)]
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            threshold_map = threshold_maps[x // 16 + (y // 16) * 16]
-            color = gray(image[x, y]) / 256 * len(threshold_map) ** 2
+            threshold_map = threshold_maps[x // 16 + (y // 16) * offset]
+            color = GRAYSCALE_METHOD(*image[x, y]) / 256 * len(threshold_map) ** 2
             target_color = (color > threshold_map[x % 16][y % 16]) * 255
             result[x, y] = (target_color,) * 3
     return Image(result, (width, height))
@@ -463,7 +460,7 @@ def recursive_error_propagation_dithering(image):
     def rec(x, y, lvl, error):
         if lvl == -1:
             try:
-                color = gray(image[x, y]) + error
+                color = GRAYSCALE_METHOD(*image[x, y]) + error
             except IndexError:
                 return error
             target_color = (color >= 128) * 255
@@ -487,7 +484,7 @@ def recursive_two_row_error_propagation_dithering(image):
     def rec(x, y, lvl, error):
         if lvl == -1:
             try:
-                color = gray(image[x, y]) + error
+                color = GRAYSCALE_METHOD(*image[x, y]) + error
             except IndexError:
                 return error
             target_color = (color >= 128) * 255
@@ -519,7 +516,7 @@ def riemersma16_dithering(image):
     errors = [0] * 16
     for x, y in hilbert(max(ilog(width), ilog(height))):
         with suppress(IndexError):
-            color = gray(image[x, y])
+            color = GRAYSCALE_METHOD(*image[x, y])
             error = errors.pop(0)
             target_color = (color + error >= 128) * 255
             result[x, y] = (target_color,) * 3
@@ -538,7 +535,7 @@ def riemersma32_dithering(image):
     errors = [0] * 16
     for x, y in hilbert(max(ilog(width), ilog(height))):
         with suppress(IndexError):
-            color = gray(image[x, y])
+            color = GRAYSCALE_METHOD(*image[x, y])
             error = errors.pop(0)
             target_color = (color + error >= 128) * 255
             result[x, y] = (target_color,) * 3
@@ -556,7 +553,7 @@ def bluenoise_dithering(image):
     result = Array2d([[0] * height for x in range(width)])
     for y in range(height - 1, -1, -1):
         for x in range(width):
-            color = gray(image[x, y])
+            color = GRAYSCALE_METHOD(*image[x, y])
             target_color = (color > threshold_map[x % 32][y % 32]) * 255
             result[x, y] = (target_color,) * 3
     return Image(result, (width, height))
