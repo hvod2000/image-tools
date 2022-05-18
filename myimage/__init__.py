@@ -1,6 +1,6 @@
 import inspect
 from functools import partial
-from .image import Image
+from .myimage import Image
 from . import prettyprinter, filemanager, quadtree, dithering
 
 for methods in [prettyprinter, filemanager, quadtree, dithering]:

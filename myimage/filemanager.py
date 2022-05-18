@@ -1,4 +1,4 @@
-from .image import Image
+from .myimage import Image
 import PIL.Image, PIL.ImageDraw
 
 __all__ = ["load", "save"]

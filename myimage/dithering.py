@@ -1,9 +1,9 @@
 from contextlib import suppress
 from random import choices, randint, shuffle
-from .hilbertcurve import hilbert
-from .array2d import Array2d
-from .image import Image
-from .bluenoise import noise32
+from .libs.hilbertcurve import hilbert
+from .libs.array2d import Array2d
+from .myimage import Image
+from .libs.bluenoise import noise32
 
 __all__ = ["dithering"]
 DITHERING_METHODS = {}

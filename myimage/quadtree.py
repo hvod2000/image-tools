@@ -1,4 +1,4 @@
-from .image import Image
+from .myimage import Image
 
 __all__ = ["to_tree", "from_tree"]
 
