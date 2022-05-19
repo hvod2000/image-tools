@@ -26,5 +26,11 @@ def matmul(m, x):
     return tuple(sum(a * b for a, b in zip(r, x)) for r in m)
 
 
+S0 = 0.00313066844250060782371
+E0 = 12.92 * S0
+gamma_encode = lambda x: x * 12.92 if x < S0 else 1.055 * x ** (1 / 2.4) - 0.055
+gamma_decode = lambda x: x / 12.92 if x < E0 else ((x + 0.055) / 1.055) ** 2.4
+gammalize = lambda r, g, b: tuple(map(gamma_encode, (r, g, b)))
+linearize = lambda r, g, b: tuple(map(gamma_decode, (r, g, b)))
 rgb2xyz = lambda r, g, b: matmul(rgb2xyz_matrix, (r, g, b))
 xyz2rgb = lambda x, y, z: matmul(xyz2rgb_matrix, (x, y, z))
